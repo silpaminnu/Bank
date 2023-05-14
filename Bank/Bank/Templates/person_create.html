@@ -1,0 +1,87 @@
+
+<form method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Create">
+</form>
+
+from django.db import models
+GENDER_CHOICES=[('M','Male'),
+             ('f','Female'),
+                ('o','others')]
+ACCOUNT_TYPE=[('s','Savings account'),
+              ('f','Fixed account'),
+              ('sa','salary account'),
+              ('c','current account'),
+              ('n','NRI account'),
+              ('r','reccuring deposit account')]
+
+
+class Person(models.Model):
+    name = models.CharField(max_length=100)
+    DOB=models.DateField()
+    Age = models.IntegerField()
+    Phonenumber=models.IntegerField()
+    Email = models.EmailField()
+    Address = models.TextField()
+    District = models.ForeignKey("District", on_delete=models.CASCADE)
+    Branches = models.ForeignKey("Branches", on_delete=models.CASCADE)
+    Gender= models.CharField(max_length=100,choices=GENDER_CHOICES)
+    AccountType=models.CharField(max_length=100,choices=ACCOUNT_TYPE)
+
+    def __str__(self):
+        return self.name
+
+
+class District(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Branches(models.Model):
+    name = models.CharField(max_length=100)
+    District = models.ForeignKey("District", on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+# from django import forms
+# from .models import Person
+#
+#
+# class PersonCreationForm(forms.ModelForm):
+#     class Meta:
+#         model = Person
+#         fields = ["name","Age","DOB",'Phonenumber',"Email","Address","Branches","Gender","AccountType"]
+from django import forms
+# GENDER_CHOICES=[('M','Male'),
+#              ('f','Female'),
+#                 ('o','others')]
+# ACCOUNT_TYPE=[('s','Savings account'),
+#               ('f','Fixed account'),
+#               ('sa','salary account'),
+#               ('c','current account'),
+#               ('n','NRI account'),
+#               ('r','reccuring deposit account')]
+#
+#
+# class Person(forms.Form):
+#     name = forms.CharField(max_length=100)
+#     DOB=forms.DateField()
+#     Age = forms.IntegerField()
+#     Phonenumber=forms.IntegerField()
+#     Email = forms.EmailField()
+#     Address = forms.CharField()
+#     District = forms.CharField()
+#     Branches = forms.CharField()
+#     Gender= forms.Select(choices=GENDER_CHOICES)
+#     AccountType=forms.Select(choices=ACCOUNT_TYPE)
+from django import forms
+from .models import Person, Branches,District
+
+
+class PersonCreationForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = ["name","DOB","Age","Phonenumber","Email","Address","Branches", "District","AccountType"]
